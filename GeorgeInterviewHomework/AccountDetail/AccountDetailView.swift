@@ -28,6 +28,19 @@ struct AccountDetailView: View {
                                 Text(note)
                             }
                         }
+
+                        Section("Transactions") {
+                            if viewStore.isLoadingTransactions {
+                                ProgressView("Loading Transactions...")
+                            } else if viewStore.transactions.isEmpty {
+                                Text("No transactions")
+                                    .foregroundStyle(.secondary)
+                            } else {
+                                ForEach(viewStore.transactions) { transaction in
+                                    TransactionView(transaction: transaction)
+                                }
+                            }
+                        }
                     }
                 } else if viewStore.isLoading {
                     ProgressView("Loading...")
