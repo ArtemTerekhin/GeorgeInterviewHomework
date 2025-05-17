@@ -21,6 +21,11 @@ struct AccountListView: View {
                 List {
                     ForEach(viewStore.accounts, id: \.id) { account in
                         AccountView(account: account)
+                            .onAppear {
+                                if viewStore.accounts.last?.id == account.id {
+                                    viewStore.send(.loadNextPage)
+                                }
+                            }
                     }
 
                     if viewStore.isLoading {
@@ -32,6 +37,11 @@ struct AccountListView: View {
                     }
                 }
                 .navigationTitle("Transparent Accounts")
+                .onAppear {
+                    if viewStore.accounts.isEmpty {
+                        viewStore.send(.fetch)
+                    }
+                }
             }
         }
     }

@@ -14,10 +14,13 @@ struct AccountList: Reducer {
     struct State: Equatable {
         var accounts: [Account] = []
         var isLoading = false
+        var page: Int = 0
+        var hasMorePages = true
     }
 
     enum Action {
         case fetch
+        case loadNextPage
         case loadResponse(TaskResult<AccountResponse>)
     }
 
@@ -30,19 +33,39 @@ struct AccountList: Reducer {
 
             switch action {
             case .fetch:
+                state.page = 0
                 state.accounts = []
+                state.hasMorePages = true
                 state.isLoading = true
+
+                let page = 0
 
                 return .run { send in
                     await send(.loadResponse(
                         TaskResult {
-                            try await apiClient.getAccounts(0, 25, nil)
+                            try await apiClient.getAccounts(page, 25, "")
+                        }
+                    ))
+                }
+
+            case .loadNextPage:
+                guard !state.isLoading, state.hasMorePages else { return .none }
+                state.isLoading = true
+
+                let page = state.page
+
+                return .run { send in
+                    await send(.loadResponse(
+                        TaskResult {
+                            try await apiClient.getAccounts(page, 25, "")
                         }
                     ))
                 }
 
             case let .loadResponse(.success(response)):
                 state.isLoading = false
+                state.page += 1
+                state.hasMorePages = state.page < response.pageCount
                 state.accounts.append(contentsOf: response.accounts)
 
                 return .none
