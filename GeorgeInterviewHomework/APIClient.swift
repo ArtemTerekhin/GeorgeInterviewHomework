@@ -21,13 +21,25 @@ struct APIClient {
 }
 
 extension APIClient: DependencyKey {
-    static let baseURL = "https://webapi.developers.erstegroup.com/api/csas/public/sandbox/v3"
+    enum Constants {
+        static let baseURL = "https://webapi.developers.erstegroup.com/api/csas/public/sandbox/v3"
+        static let userAgent = "iOS-App"
+        static let apiKey = "49c7a72e-b244-4e8d-9bb2-d73c576cba0d"
+        static let apiEnv = "env.csas.sandbox"
+        static let acceptEncoding = "gzip"
+        static let acceptType = "application/json"
+
+        static let defaultAccountPageSize = 25
+        static let defaultTransactionPageSize = 25
+        static let defaultSortField = "processingDate"
+        static let defaultSortOrder = "desc"
+    }
 
     private static func makeRequest(
         path: String,
         queryItems: [URLQueryItem]? = nil
     ) throws -> URLRequest {
-        guard var components = URLComponents(string: "\(baseURL)\(path)") else {
+        guard var components = URLComponents(string: "\(Constants.baseURL)\(path)") else {
             throw URLError(.badURL)
         }
         components.queryItems = queryItems
@@ -37,11 +49,11 @@ extension APIClient: DependencyKey {
         }
 
         var request = URLRequest(url: url)
-        request.setValue("iOS-App", forHTTPHeaderField: "User-Agent")
-        request.setValue("49c7a72e-b244-4e8d-9bb2-d73c576cba0d", forHTTPHeaderField: "WEB-API-key")
-        request.setValue("env.csas.sandbox", forHTTPHeaderField: "WEB-API-env")
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("gzip", forHTTPHeaderField: "Accept-Encoding")
+        request.setValue(Constants.userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(Constants.apiKey, forHTTPHeaderField: "WEB-API-key")
+        request.setValue(Constants.apiEnv, forHTTPHeaderField: "WEB-API-env")
+        request.setValue(Constants.acceptType, forHTTPHeaderField: "Accept")
+        request.setValue(Constants.acceptEncoding, forHTTPHeaderField: "Accept-Encoding")
 
         return request
     }
@@ -50,8 +62,8 @@ extension APIClient: DependencyKey {
         let (data, response) = try await URLSession.shared.data(for: request)
 
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
-            print("❌ HTTP Error: \(httpResponse.statusCode)")
-            print(String(data: data, encoding: .utf8) ?? "No response body")
+            debugPrint("❌ HTTP Error: \(httpResponse.statusCode)")
+            debugPrint(String(data: data, encoding: .utf8) ?? "No response body")
             throw URLError(.badServerResponse)
         }
 
@@ -70,8 +82,7 @@ extension APIClient: DependencyKey {
         },
 
         getAccountDetail: { id in
-            let path = "/transparentAccounts/\(id)"
-            let request = try makeRequest(path: path)
+            let request = try makeRequest(path: "/transparentAccounts/\(id)")
             return try await fetch(request)
         },
 
@@ -81,9 +92,9 @@ extension APIClient: DependencyKey {
 
             var queryItems: [URLQueryItem] = [
                 .init(name: "page", value: "\(page)"),
-                .init(name: "size", value: "25"),
-                .init(name: "sort", value: "processingDate"),
-                .init(name: "order", value: "desc"),
+                .init(name: "size", value: "\(Constants.defaultTransactionPageSize)"),
+                .init(name: "sort", value: Constants.defaultSortField),
+                .init(name: "order", value: Constants.defaultSortOrder),
                 .init(name: "dateFrom", value: formatter.string(from: from)),
                 .init(name: "dateTo", value: formatter.string(from: to))
             ]
@@ -105,3 +116,4 @@ extension DependencyValues {
         set { self[APIClient.self] = newValue }
     }
 }
+
