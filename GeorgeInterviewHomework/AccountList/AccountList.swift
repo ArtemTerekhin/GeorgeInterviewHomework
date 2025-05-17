@@ -10,8 +10,15 @@ import Foundation
 
 @Reducer
 struct AccountList: Reducer {
+    @Reducer(state: .equatable)
+    enum Destination {
+        case accountDetail(AccountDetailReducer)
+    }
+
     @ObservableState
     struct State: Equatable {
+        @Presents var destination: Destination.State?
+
         var accounts: [Account] = []
         var isLoading = false
         var page: Int = 0
@@ -25,6 +32,8 @@ struct AccountList: Reducer {
         case loadResponse(TaskResult<AccountResponse>)
         case searchTextChanged(String)
         case refresh
+        case selectAccount(String)
+        case destination(PresentationAction<Destination.Action>)
     }
 
     @Dependency(\.apiClient) var apiClient
@@ -100,7 +109,16 @@ struct AccountList: Reducer {
                 state.hasMorePages = true
 
                 return .send(.loadNextPage)
+
+            case let .selectAccount(id):
+                state.destination = .accountDetail(.init(id: id))
+
+                return .none
+
+            case .destination:
+                return .none
             }
         }
+        .ifLet(\.$destination, action: \.destination)
     }
 }

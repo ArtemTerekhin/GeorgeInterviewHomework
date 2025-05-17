@@ -21,6 +21,9 @@ struct AccountListView: View {
                 List {
                     ForEach(viewStore.accounts, id: \.id) { account in
                         AccountView(account: account)
+                            .onTapGesture {
+                                viewStore.send(.selectAccount(account.id))
+                            }
                             .onAppear {
                                 if viewStore.accounts.last?.id == account.id {
                                     viewStore.send(.loadNextPage)
@@ -51,6 +54,13 @@ struct AccountListView: View {
                 .refreshable {
                     viewStore.send(.refresh)
                 }
+                .navigationDestination(
+                    item: $store.scope(
+                        state: \.destination?.accountDetail,
+                        action: \.destination.accountDetail
+                    ),
+                    destination: AccountDetailView.init
+                )
             }
         }
     }
