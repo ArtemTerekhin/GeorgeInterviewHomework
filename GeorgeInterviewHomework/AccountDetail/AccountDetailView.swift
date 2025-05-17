@@ -20,7 +20,7 @@ struct AccountDetailView: View {
                             Text("Name: \(detail.name)")
                             Text("Account: \(detail.accountNumber)/\(detail.bankCode)")
                             Text("IBAN: \(detail.iban)")
-                            Text("Balance: \(detail.balance, specifier: "%.2f") \(detail.currency)")
+                            Text("Balance: \(detail.balance, format: .currency(code: detail.currency))")
                         }
 
                         if let note = detail.note {

@@ -46,8 +46,8 @@ struct TransactionView: View {
 
             Spacer()
 
-            Text("\(amount, specifier: "%.2f") \(currency)")
-                .font(.subheadline)
+            Text(formattedAmount(amount, currencyCode: currency))
+                .font(.headline)
                 .foregroundStyle(amount >= 0 ? .green : .red)
         }
         .padding(.vertical, 4)

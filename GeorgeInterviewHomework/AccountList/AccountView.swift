@@ -47,7 +47,7 @@ struct AccountView: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 4) {
-                Text(String(format: "%.2f %@", balance, currency ?? "CZK"))
+                Text(formattedAmount(balance, currencyCode: currency ?? "CZK"))
                     .font(.headline)
                     .foregroundColor(.green)
             }
