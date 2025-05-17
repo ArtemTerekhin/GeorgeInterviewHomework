@@ -11,6 +11,13 @@ import ComposableArchitecture
 struct APIClient {
     var getAccounts: (_ page: Int, _ size: Int, _ filter: String?) async throws -> AccountResponse
     var getAccountDetail: (_ id: String) async throws -> AccountDetail
+    var getTransactions: (
+        _ accountId: String,
+        _ page: Int,
+        _ from: Date,
+        _ to: Date,
+        _ filter: String?
+    ) async throws -> TransactionResponse
 }
 
 extension APIClient: DependencyKey {
@@ -65,6 +72,28 @@ extension APIClient: DependencyKey {
         getAccountDetail: { id in
             let path = "/transparentAccounts/\(id)"
             let request = try makeRequest(path: path)
+            return try await fetch(request)
+        },
+
+        getTransactions: { accountId, page, from, to, filter in
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime]
+
+            var queryItems: [URLQueryItem] = [
+                .init(name: "page", value: "\(page)"),
+                .init(name: "size", value: "25"),
+                .init(name: "sort", value: "processingDate"),
+                .init(name: "order", value: "desc"),
+                .init(name: "dateFrom", value: formatter.string(from: from)),
+                .init(name: "dateTo", value: formatter.string(from: to))
+            ]
+
+            if let filter = filter, !filter.isEmpty {
+                queryItems.append(.init(name: "filter", value: filter))
+            }
+
+            let path = "/transparentAccounts/\(accountId)/transactions/"
+            let request = try makeRequest(path: path, queryItems: queryItems)
             return try await fetch(request)
         }
     )
