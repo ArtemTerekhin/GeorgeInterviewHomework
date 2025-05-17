@@ -20,10 +20,7 @@ struct AccountListView: View {
             NavigationStack {
                 List {
                     ForEach(viewStore.accounts, id: \.id) { account in
-                        HStack {
-                            Text(account.name)
-                            Text(String(format: "%.2f %@", account.balance, account.currency ?? "CZK"))
-                        }
+                        AccountView(account: account)
                     }
 
                     if viewStore.isLoading {
