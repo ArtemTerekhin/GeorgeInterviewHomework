@@ -13,7 +13,7 @@ struct TransactionView: View {
     let currency: String
     let processingDate: String
     let variableSymbol: String?
-
+    
     init(transaction: Transaction) {
         self.typeDescription = transaction.typeDescription
         self.amount = transaction.amount.value
@@ -21,31 +21,31 @@ struct TransactionView: View {
         self.processingDate = transaction.formattedProcessingDate
         self.variableSymbol = transaction.sender.variableSymbol
     }
-
+    
     var body: some View {
         HStack {
             Circle()
                 .padding(.top, 6)
                 .frame(width: 16, height: 16)
                 .foregroundStyle(amount >= 0 ? .green : .red)
-
+            
             VStack(alignment: .leading, spacing: 4) {
                 Text(typeDescription)
                     .font(.headline)
-
+                
                 if let variableSymbol = variableSymbol {
                     Text("Variable symbol: \(variableSymbol)")
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
-
+                
                 Text("Date: \(processingDate)")
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
-
+            
             Spacer()
-
+            
             Text(formattedAmount(amount, currencyCode: currency))
                 .font(.headline)
                 .foregroundStyle(amount >= 0 ? .green : .red)

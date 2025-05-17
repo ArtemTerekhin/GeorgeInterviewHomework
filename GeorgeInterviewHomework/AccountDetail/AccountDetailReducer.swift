@@ -21,7 +21,7 @@ struct AccountDetailReducer: Reducer {
 
     enum Action: Equatable {
         case onAppear
-        case response(TaskResult<AccountDetail>)
+        case accountDetailResponse(TaskResult<AccountDetail>)
         case transactionsResponse(TaskResult<TransactionResponse>)
     }
 
@@ -30,6 +30,11 @@ struct AccountDetailReducer: Reducer {
     @Dependency(\.date) var date
 
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
+        func finishLoading() {
+            state.isLoading = false
+            state.isLoadingTransactions = false
+        }
+
         switch action {
         case .onAppear:
             state.isLoading = true
@@ -40,15 +45,13 @@ struct AccountDetailReducer: Reducer {
             return .merge(
                 .run { send in
                     await send(
-                        .response(TaskResult {
+                        .accountDetailResponse(TaskResult {
                             try await apiClient.getAccountDetail(id)
                         })
                     )
                 },
                 .run { [id = state.id, toDate = date()] send in
-                    guard let fromDate = calendar.date(byAdding: .day, value: -1, to: toDate) else {
-                        return
-                    }
+                    guard let fromDate = calendar.date(byAdding: .day, value: -1, to: toDate) else { return }
 
                     await send(
                         .transactionsResponse(TaskResult {
@@ -58,27 +61,24 @@ struct AccountDetailReducer: Reducer {
                 }
             )
 
-        case let .response(.success(detail)):
+        case let .accountDetailResponse(.success(detail)):
             state.detail = detail
             state.isLoading = false
-
             return .none
 
-        case .response(.failure):
+        case let .accountDetailResponse(.failure(error)):
+            debugPrint("Failed to load account detail \(error)")
             state.isLoading = false
-
             return .none
 
         case let .transactionsResponse(.success(response)):
             state.transactions = response.transactions
             state.isLoadingTransactions = false
-
             return .none
 
         case let .transactionsResponse(.failure(error)):
-            print("Failure \(error)")
+            debugPrint("Failed to load transactions \(error)")
             state.isLoadingTransactions = false
-
             return .none
         }
     }

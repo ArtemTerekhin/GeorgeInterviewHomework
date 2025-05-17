@@ -15,7 +15,7 @@ struct AccountView: View {
     let bankCode: String
     let balance: Double
     let currency: String?
-
+    
     init(account: Account) {
         self.id = account.id
         self.name = account.name
@@ -25,27 +25,27 @@ struct AccountView: View {
         self.balance = account.balance
         self.currency = account.currency
     }
-
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 6) {
                 Text(name)
                     .font(.headline)
-
+                
                 if let description = description, !description.isEmpty {
                     Text(description)
                         .font(.subheadline)
                         .foregroundColor(.gray)
                         .lineLimit(1)
                 }
-
+                
                 Text("\(accountNumber)/\(bankCode)")
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
-
+            
             Spacer()
-
+            
             VStack(alignment: .trailing, spacing: 4) {
                 Text(formattedAmount(balance, currencyCode: currency ?? "CZK"))
                     .font(.headline)

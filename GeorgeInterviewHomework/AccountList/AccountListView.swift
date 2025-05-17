@@ -55,19 +55,10 @@ struct AccountListView: View {
                 )
                 .overlay {
                     if viewStore.isLoading {
-                        ZStack {
-                            Color.black.opacity(0.05)
-                                .ignoresSafeArea()
-                            ProgressView("Loading...")
-                                .padding()
-                                .background(Color(.systemBackground))
-                                .cornerRadius(12)
-                                .shadow(radius: 4)
-                        }
+                        ProgressView("Loading...")
                     }
                 }
             }
         }
     }
-
 }

@@ -50,18 +50,10 @@ struct AccountDetailView: View {
                 viewStore.send(.onAppear)
             }
             .overlay {
-                if viewStore.isLoading {
-                    ZStack {
-                        Color.black.opacity(0.1).ignoresSafeArea()
-                        ProgressView("Loading...")
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .cornerRadius(12)
-                            .shadow(radius: 4)
-                    }
+                if viewStore.isLoading  {
+                    ProgressView("Loading...")
                 }
             }
         }
     }
 }
-

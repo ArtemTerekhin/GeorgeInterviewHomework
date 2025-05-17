@@ -9,7 +9,7 @@ import Foundation
 
 struct Account: Identifiable, Decodable, Equatable {
     var id: String { accountNumber }
-
+    
     let accountNumber: String
     let bankCode: String
     let transparencyFrom: String

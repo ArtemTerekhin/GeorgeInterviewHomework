@@ -53,4 +53,3 @@ extension Transaction {
         return outputFormatter.string(from: date)
     }
 }
-
