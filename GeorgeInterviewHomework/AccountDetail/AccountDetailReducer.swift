@@ -26,6 +26,8 @@ struct AccountDetailReducer: Reducer {
     }
 
     @Dependency(\.apiClient) var apiClient
+    @Dependency(\.calendar) var calendar
+    @Dependency(\.date) var date
 
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
         switch action {
@@ -34,10 +36,6 @@ struct AccountDetailReducer: Reducer {
             state.isLoadingTransactions = true
 
             let id = state.id
-            let now = Date()
-            let calendar = Calendar.current
-            let fromDate = calendar.date(byAdding: .day, value: -1, to: now)!
-            let toDate = now
 
             return .merge(
                 .run { send in
@@ -47,7 +45,11 @@ struct AccountDetailReducer: Reducer {
                         })
                     )
                 },
-                .run { send in
+                .run { [id = state.id, toDate = date()] send in
+                    guard let fromDate = calendar.date(byAdding: .day, value: -1, to: toDate) else {
+                        return
+                    }
+
                     await send(
                         .transactionsResponse(TaskResult {
                             try await apiClient.getTransactions(id, 0, fromDate, toDate, nil)

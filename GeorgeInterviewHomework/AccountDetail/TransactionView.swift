@@ -12,12 +12,14 @@ struct TransactionView: View {
     let amount: Double
     let currency: String
     let processingDate: String
+    let variableSymbol: String?
 
     init(transaction: Transaction) {
         self.typeDescription = transaction.typeDescription
         self.amount = transaction.amount.value
         self.currency = transaction.amount.currency
-        self.processingDate = transaction.processingDate
+        self.processingDate = transaction.formattedProcessingDate
+        self.variableSymbol = transaction.sender.variableSymbol
     }
 
     var body: some View {
@@ -30,13 +32,23 @@ struct TransactionView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(typeDescription)
                     .font(.headline)
-                Text("\(amount, specifier: "%.2f") \(currency)")
-                    .font(.subheadline)
-                    .foregroundStyle(amount >= 0 ? .green : .red)
+
+                if let variableSymbol = variableSymbol {
+                    Text("Variable symbol: \(variableSymbol)")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+
                 Text("Date: \(processingDate)")
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
+
+            Spacer()
+
+            Text("\(amount, specifier: "%.2f") \(currency)")
+                .font(.subheadline)
+                .foregroundStyle(amount >= 0 ? .green : .red)
         }
         .padding(.vertical, 4)
     }

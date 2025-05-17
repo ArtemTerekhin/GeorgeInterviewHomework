@@ -35,3 +35,22 @@ struct Transaction: Decodable, Equatable, Identifiable {
     let receiver: User
     let typeDescription: String
 }
+
+extension Transaction {
+    var formattedProcessingDate: String {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        inputFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "dd MMM yyyy"
+        outputFormatter.locale = Locale(identifier: "en_US")
+
+        guard let date = inputFormatter.date(from: processingDate) else {
+            return processingDate
+        }
+
+        return outputFormatter.string(from: date)
+    }
+}
+
