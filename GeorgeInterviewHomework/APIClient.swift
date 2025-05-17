@@ -10,6 +10,7 @@ import ComposableArchitecture
 
 struct APIClient {
     var getAccounts: (_ page: Int, _ size: Int, _ filter: String?) async throws -> AccountResponse
+    var getAccountDetail: (_ id: String) async throws -> AccountDetail
 }
 
 extension APIClient: DependencyKey {
@@ -58,6 +59,12 @@ extension APIClient: DependencyKey {
             ] + (filter?.isEmpty == false ? [.init(name: "filter", value: filter)] : [])
 
             let request = try makeRequest(path: "/transparentAccounts", queryItems: queryItems)
+            return try await fetch(request)
+        },
+
+        getAccountDetail: { id in
+            let path = "/transparentAccounts/\(id)"
+            let request = try makeRequest(path: path)
             return try await fetch(request)
         }
     )
