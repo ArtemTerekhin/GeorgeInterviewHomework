@@ -42,6 +42,15 @@ struct AccountListView: View {
                         viewStore.send(.fetch)
                     }
                 }
+                .searchable(
+                    text: viewStore.binding(
+                        get: \.searchText,
+                        send: AccountList.Action.searchTextChanged
+                    )
+                )
+                .refreshable {
+                    viewStore.send(.refresh)
+                }
             }
         }
     }
