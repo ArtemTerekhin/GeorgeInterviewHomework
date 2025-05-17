@@ -30,14 +30,6 @@ struct AccountListView: View {
                                 }
                             }
                     }
-
-                    if viewStore.isLoading {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
-                        }
-                    }
                 }
                 .navigationTitle("Transparent Accounts")
                 .onAppear {
@@ -61,7 +53,21 @@ struct AccountListView: View {
                     ),
                     destination: AccountDetailView.init
                 )
+                .overlay {
+                    if viewStore.isLoading {
+                        ZStack {
+                            Color.black.opacity(0.05)
+                                .ignoresSafeArea()
+                            ProgressView("Loading...")
+                                .padding()
+                                .background(Color(.systemBackground))
+                                .cornerRadius(12)
+                                .shadow(radius: 4)
+                        }
+                    }
+                }
             }
         }
     }
+
 }

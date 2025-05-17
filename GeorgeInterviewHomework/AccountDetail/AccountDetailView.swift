@@ -13,8 +13,8 @@ struct AccountDetailView: View {
 
     var body: some View {
         WithViewStore(store, observe: \.self) { viewStore in
-            if let detail = viewStore.detail {
-                List {
+            List {
+                if let detail = viewStore.detail {
                     Section("Account Info") {
                         Text("Name: \(detail.name)")
                         Text("Account: \(detail.accountNumber)/\(detail.bankCode)")
@@ -31,6 +31,7 @@ struct AccountDetailView: View {
                     Section("Transactions") {
                         if viewStore.isLoadingTransactions {
                             ProgressView("Loading Transactions...")
+                                .frame(maxWidth: .infinity, alignment: .center)
                         } else if viewStore.transactions.isEmpty {
                             Text("No transactions")
                                 .foregroundStyle(.secondary)
@@ -40,17 +41,27 @@ struct AccountDetailView: View {
                             }
                         }
                     }
+                } else {
+                    EmptyView()
                 }
-            } else if viewStore.isLoading {
-                ProgressView("Loading...")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                Text("No data available")
             }
-        }
-        .navigationTitle("Account Detail")
-        .onAppear {
-            store.send(.onAppear)
+            .navigationTitle("Account Detail")
+            .onAppear {
+                viewStore.send(.onAppear)
+            }
+            .overlay {
+                if viewStore.isLoading {
+                    ZStack {
+                        Color.black.opacity(0.1).ignoresSafeArea()
+                        ProgressView("Loading...")
+                            .padding()
+                            .background(Color(.systemBackground))
+                            .cornerRadius(12)
+                            .shadow(radius: 4)
+                    }
+                }
+            }
         }
     }
 }
+
