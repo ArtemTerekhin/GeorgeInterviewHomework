@@ -18,8 +18,21 @@ struct AccountListView: View {
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
-                VStack {
-                    Text("Account info")
+                List {
+                    ForEach(viewStore.accounts, id: \.id) { account in
+                        HStack {
+                            Text(account.name)
+                            Text(String(format: "%.2f %@", account.balance, account.currency ?? "CZK"))
+                        }
+                    }
+
+                    if viewStore.isLoading {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
+                    }
                 }
                 .navigationTitle("Transparent Accounts")
             }

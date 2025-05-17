@@ -17,10 +17,10 @@ struct Account: Identifiable, Decodable, Equatable {
     let publicationTo: String
     let actualizationDate: String
     let balance: Double
-    let currency: String
+    let currency: String?
     let name: String
-    let description: String
-    let note: String
+    let description: String?
+    let note: String?
     let iban: String
-    let statements: [String]
+    let statements: [String]?
 }
