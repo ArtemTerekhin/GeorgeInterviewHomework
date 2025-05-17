@@ -35,12 +35,12 @@ struct TransactionView: View {
                 
                 if let variableSymbol = variableSymbol {
                     Text("Variable symbol: \(variableSymbol)")
-                        .font(.caption2)
+                        .font(.caption)
                         .foregroundColor(.secondary)
                 }
                 
                 Text("Date: \(processingDate)")
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
             

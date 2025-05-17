@@ -29,27 +29,27 @@ struct AccountView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 6) {
-                Text(name)
-                    .font(.headline)
-                
+                HStack(alignment: .top) {
+                    Text(name)
+                        .font(.headline)
+
+                    Spacer()
+
+                    Text(formattedAmount(balance, currencyCode: currency ?? "CZK"))
+                        .font(.headline)
+                        .foregroundColor(.green)
+                }
+
                 if let description = description, !description.isEmpty {
                     Text(description)
                         .font(.subheadline)
                         .foregroundColor(.gray)
                         .lineLimit(1)
                 }
-                
+
                 Text("\(accountNumber)/\(bankCode)")
                     .font(.footnote)
                     .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-            
-            VStack(alignment: .trailing, spacing: 4) {
-                Text(formattedAmount(balance, currencyCode: currency ?? "CZK"))
-                    .font(.headline)
-                    .foregroundColor(.green)
             }
         }
         .padding(.vertical, 8)
