@@ -105,7 +105,6 @@
 			buildConfigurationList = 8E8731F32DD7D5BC00689BC7 /* Build configuration list for PBXNativeTarget "GeorgeInterviewHomework" */;
 			buildPhases = (
 				8E8731CE2DD7D5BA00689BC7 /* Sources */,
-				8E8731FF2DD7D7A200689BC7 /* Run Script */,
 				8E8731CF2DD7D5BA00689BC7 /* Frameworks */,
 				8E8731D02DD7D5BA00689BC7 /* Resources */,
 			);
@@ -240,27 +239,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		8E8731FF2DD7D7A200689BC7 /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint не установлен. Установи его с помощью 'brew install swiftlint'\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8E8731CE2DD7D5BA00689BC7 /* Sources */ = {
