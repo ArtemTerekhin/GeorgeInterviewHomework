@@ -26,7 +26,7 @@ struct Transaction: Decodable, Equatable, Identifiable {
         let description: String?
     }
 
-    let id = UUID()
+    var id: UUID { UUID() }
     let amount: Amount
     let type: String
     let dueDate: String

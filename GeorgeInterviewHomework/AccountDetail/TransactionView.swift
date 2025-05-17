@@ -21,14 +21,22 @@ struct TransactionView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(typeDescription)
-                .font(.headline)
-            Text("\(amount, specifier: "%.2f") \(currency)")
-                .font(.subheadline)
-            Text("Date: \(processingDate)")
-                .font(.caption2)
-                .foregroundColor(.secondary)
+        HStack {
+            Circle()
+                .padding(.top, 6)
+                .frame(width: 16, height: 16)
+                .foregroundStyle(amount >= 0 ? .green : .red)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(typeDescription)
+                    .font(.headline)
+                Text("\(amount, specifier: "%.2f") \(currency)")
+                    .font(.subheadline)
+                    .foregroundStyle(amount >= 0 ? .green : .red)
+                Text("Date: \(processingDate)")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
         }
         .padding(.vertical, 4)
     }
